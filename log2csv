@@ -1,0 +1,42 @@
+#!/usr/bin/env python3
+
+import sys
+import io
+import csv
+
+LOG = io.TextIOWrapper(sys.stdin.buffer, errors="replace")
+
+def readfield(first=False):
+    field = LOG.readline()
+    if field == '':
+        sys.exit(int(not first))
+    return field[:-1]
+
+with open(sys.argv[1], "w") as commits_file, \
+        open(sys.argv[2], "w") as relations_file:
+    commits_writer = csv.writer(
+        commits_file, doublequote=False, escapechar="\\"
+    )
+    commits_writer.writerow([
+        "hash",
+        "author_name", "author_email", "author_timestamp",
+        "subject"
+    ])
+    relations_writer = csv.writer(
+        relations_file, doublequote=False, escapechar="\\"
+    )
+    relations_writer.writerow(["hash", "parent_hash"])
+    while True:
+        commit_hash = readfield(True)
+        parent_hashes = readfield()
+        author_name = readfield()
+        author_email = readfield()
+        author_timestamp = readfield()
+        subject = readfield()
+        commits_writer.writerow([
+            commit_hash,
+            author_name, author_email, author_timestamp,
+            subject
+        ])
+        for parent_hash in parent_hashes.split():
+            relations_writer.writerow([commit_hash, parent_hash])
