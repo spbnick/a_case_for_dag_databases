@@ -1,5 +1,14 @@
 #!/usr/bin/env python3
 
+#
+# Convert git log to CSV files with commit data and child->parent relations
+#
+# Usage:
+#
+#   git log --format='%H%n%P%n%an%n%ae%n%aI%n%s' |
+#       ./log2csv commits.csv relations.csv
+#
+
 import sys
 import io
 import csv
